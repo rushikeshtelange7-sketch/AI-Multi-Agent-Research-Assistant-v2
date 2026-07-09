@@ -1,0 +1,14 @@
+streamlit
+langchain
+langchain-openai
+langchain-community
+duckduckgo-search
+python-dotenv
+pydantic
+speechrecognition
+pyttsx3
+pandas
+python-docx
+fpdf2
+requests
+httpx
