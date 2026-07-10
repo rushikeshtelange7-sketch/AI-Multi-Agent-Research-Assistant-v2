@@ -29,37 +29,54 @@ if "history" not in st.session_state:
 # VOICE FUNCTIONS
 # =====================================
 
+import platform
+import speech_recognition as sr
+import pyttsx3
+
+
 def speak_text(text):
 
-    engine = pyttsx3.init()
+    if platform.system() != "Windows":
 
-    engine.setProperty("rate",170)
+        st.info("🔊 Voice reading works only on Windows.")
+        return
 
-    engine.say(text)
+    try:
 
-    engine.runAndWait()
+        engine = pyttsx3.init()
+
+        engine.setProperty("rate", 170)
+
+        engine.say(text)
+
+        engine.runAndWait()
+
+    except Exception:
+
+        st.warning("Voice engine is unavailable.")
 
 
 def listen_voice():
 
     recognizer = sr.Recognizer()
 
-    with sr.Microphone() as source:
-
-        st.info("🎤 Speak Now...")
-
-        recognizer.adjust_for_ambient_noise(source)
-
-        audio = recognizer.listen(source)
-
     try:
+
+        with sr.Microphone() as source:
+
+            st.info("🎤 Speak Now...")
+
+            recognizer.adjust_for_ambient_noise(source)
+
+            audio = recognizer.listen(source)
 
         return recognizer.recognize_google(audio)
 
-    except:
+    except Exception:
+
+        st.warning("Voice input is unavailable.")
 
         return ""
-
 # =====================================
 # READ REPORT
 # =====================================
@@ -367,13 +384,19 @@ if "report" in st.session_state:
 
         with col2:
 
-            if st.button(
-                "🔊 Read Report",
-                key="read_report",
-                use_container_width=True
-            ):
+           if platform.system() == "Windows":
 
-                read_complete_report()
+              if st.button(
+                 "🔊 Read Report",
+                 key="read_report",
+                 use_container_width=True
+         ):
+
+                 read_complete_report()
+
+           else:
+
+            st.info("🔊 Voice feature works only on Windows.")
 # =====================================
 # SIDEBAR
 # =====================================
