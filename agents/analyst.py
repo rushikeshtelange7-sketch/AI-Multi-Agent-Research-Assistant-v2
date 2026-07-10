@@ -1,25 +1,39 @@
 import os
-from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
 
-llm = ChatOpenAI(
-    model="meta-llama/llama-3.3-70b-instruct:free",
-    api_key=os.getenv("OPENROUTER_API_KEY"),
-    base_url="https://openrouter.ai/api/v1"
+load_dotenv()
+
+llm = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
+    model="llama-3.3-70b-versatile",
 )
 
 def analyst_agent(topic, research):
 
     prompt = f"""
-    Topic:
+You are an AI Research Analyst.
 
-    {topic}
+Topic:
+{topic}
 
-    Research Data:
+Research Data:
+{research}
 
-    {research}
+Create a professional analysis.
 
-    Summarize the important insights in 5 bullet points.
-    """
+Include:
+
+• Key Insights
+
+• Advantages
+
+• Challenges
+
+• Future Scope
+
+Write using bullet points.
+"""
 
     response = llm.invoke(prompt)
 

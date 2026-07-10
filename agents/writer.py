@@ -1,35 +1,41 @@
 import os
-from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
 
-llm = ChatOpenAI(
-    model="meta-llama/llama-3.3-70b-instruct:free",
-    api_key=os.getenv("OPENROUTER_API_KEY"),
-    base_url="https://openrouter.ai/api/v1"
+load_dotenv()
+
+llm = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
+    model="llama-3.3-70b-versatile",
 )
 
 def writer_agent(topic, analysis):
 
     prompt = f"""
-    Create a professional research report.
+You are a Professional Research Report Writer.
 
-    Topic:
+Topic:
+{topic}
 
-    {topic}
+Analysis:
+{analysis}
 
-    Analysis:
+Create a professional report.
 
-    {analysis}
+Include:
 
-    Include:
+# Introduction
 
-    1. Introduction
+# Objectives
 
-    2. Key Findings
+# Research Analysis
 
-    3. Conclusion
+# Conclusion
 
-    Keep it concise and professional.
-    """
+# References
+
+Make the report easy to understand and suitable for a college project.
+"""
 
     response = llm.invoke(prompt)
 

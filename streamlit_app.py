@@ -2,7 +2,6 @@ import streamlit as st
 import speech_recognition as sr
 import pyttsx3
 
-
 from agents.planner import planner_agent
 from agents.researcher import researcher_agent
 from agents.analyst import analyst_agent
@@ -15,7 +14,8 @@ from agents.writer import writer_agent
 st.set_page_config(
     page_title="AI Research Studio",
     page_icon="🤖",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 # =====================================
@@ -30,61 +30,87 @@ if "history" not in st.session_state:
 # =====================================
 
 def speak_text(text):
+
     engine = pyttsx3.init()
-    engine.setProperty("rate", 170)
+
+    engine.setProperty("rate",170)
+
     engine.say(text)
+
     engine.runAndWait()
 
 
 def listen_voice():
+
     recognizer = sr.Recognizer()
 
     with sr.Microphone() as source:
-        st.info("🎤 Speak now...")
+
+        st.info("🎤 Speak Now...")
+
         recognizer.adjust_for_ambient_noise(source)
+
         audio = recognizer.listen(source)
 
     try:
+
         return recognizer.recognize_google(audio)
+
     except:
+
         return ""
 
 # =====================================
-# READ COMPLETE REPORT
+# READ REPORT
 # =====================================
 
 def read_complete_report():
 
-    text = ""
+    text=""
 
     if "plan" in st.session_state:
+
         text += "Research Plan\n\n"
-        text += st.session_state.plan + "\n\n"
+
+        text += st.session_state.plan
+
+        text += "\n\n"
 
     if "research" in st.session_state:
 
         text += "Research Results\n\n"
 
-        if isinstance(st.session_state.research, list):
+        if isinstance(st.session_state.research,list):
+
             text += "\n".join(st.session_state.research)
+
         else:
+
             text += str(st.session_state.research)
 
         text += "\n\n"
 
     if "analysis" in st.session_state:
+
         text += "Analysis\n\n"
-        text += st.session_state.analysis + "\n\n"
+
+        text += st.session_state.analysis
+
+        text += "\n\n"
 
     if "report" in st.session_state:
+
         text += "Final Report\n\n"
+
         text += st.session_state.report
 
     if text:
-        speak_text(text)
-    else:
-        st.warning("Please generate a report first.")
 
+        speak_text(text)
+
+    else:
+
+        st.warning("Generate a report first.")
 # =====================================
 # CUSTOM CSS
 # =====================================
@@ -97,38 +123,37 @@ footer{visibility:hidden;}
 header{visibility:hidden;}
 
 .stApp{
-background:linear-gradient(135deg,#0b1120,#111827,#1e293b);
+background:radial-gradient(circle at top,#1d1638,#0d1018 60%,#090909);
 }
 
 .block-container{
 max-width:1100px;
-padding-top:30px;
+padding-top:35px;
 }
 
 .hero{
-font-size:58px;
+font-size:68px;
 font-weight:900;
-background:linear-gradient(90deg,#a855f7,#38bdf8);
+line-height:1.1;
+background:linear-gradient(90deg,#b388ff,#40c4ff);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-line-height:1.1;
 }
 
 .subtitle{
+color:#9CA3AF;
 font-size:18px;
-color:#94a3b8;
-margin-top:-8px;
-margin-bottom:25px;
+margin-top:-10px;
+margin-bottom:30px;
 }
 
 .badge{
 display:inline-block;
-padding:10px 18px;
-margin-right:10px;
-margin-top:8px;
+padding:8px 18px;
+margin:5px;
 border-radius:25px;
-background:#1e293b;
-border:1px solid #6366f1;
+background:#1c1b34;
+border:1px solid #7c3aed;
 color:white;
 font-size:15px;
 font-weight:bold;
@@ -136,11 +161,22 @@ font-weight:bold;
 
 .card{
 background:#111827;
+border:1px solid #262f42;
 padding:25px;
-border-radius:20px;
-border:1px solid #334155;
+border-radius:22px;
 margin-top:20px;
-box-shadow:0 0 20px rgba(0,0,0,.35);
+box-shadow:0px 10px 35px rgba(0,0,0,.35);
+}
+
+.result-card{
+background:#151823;
+padding:25px;
+border-radius:18px;
+border:1px solid #343a46;
+color:white;
+line-height:1.8;
+font-size:16px;
+margin-top:10px;
 }
 
 </style>
@@ -158,18 +194,23 @@ st.markdown("""
 <div class="subtitle">
 Autonomous research pipeline powered by five specialized AI agents
 </div>
-""", unsafe_allow_html=True)
 
-st.markdown("""
-<div>
-<span class="badge">🧭 Planner</span>
-<span class="badge">🔍 Researcher</span>
-<span class="badge">📊 Analyst</span>
-<span class="badge">✍ Writer</span>
-<span class="badge">✅ Fact Checker</span>
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;margin-bottom:25px;">
+
+<div class="badge">🧭 Planner</div>
+
+<div class="badge">🔍 Researcher</div>
+
+<div class="badge">📊 Analyst</div>
+
+<div class="badge">✍ Writer</div>
+
+<div class="badge">✅ Fact Checker</div>
+
 </div>
 """, unsafe_allow_html=True)
 
+st.write("")
 st.write("")
 
 # =====================================
@@ -180,11 +221,11 @@ st.markdown('<div class="card">', unsafe_allow_html=True)
 
 st.subheader("💬 Ask Anything")
 
-col1, col2 = st.columns([5,1])
+col1,col2=st.columns([5,1])
 
 with col1:
 
-    topic = st.text_input(
+    topic=st.text_input(
         "",
         placeholder="Type your research topic...",
         label_visibility="collapsed"
@@ -194,16 +235,19 @@ with col2:
 
     if st.button("🎤 Voice"):
 
-        voice = listen_voice()
+        voice=listen_voice()
 
         if voice:
-            topic = voice
+
+            topic=voice
+
+            st.success(voice)
 
 st.write("")
 
-st.subheader("📁 Upload Document")
+st.subheader("📁 Upload File")
 
-uploaded_file = st.file_uploader(
+uploaded_file=st.file_uploader(
     "",
     type=["pdf","txt","docx"],
     label_visibility="collapsed"
@@ -211,41 +255,43 @@ uploaded_file = st.file_uploader(
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-st.write("")
-
 # =====================================
 # GENERATE REPORT
 # =====================================
 
 topic = topic.strip()
 
-if topic != "":
+if topic:
 
     progress = st.progress(0)
 
     status = st.empty()
 
-    with st.spinner("🤖 AI Agents are researching..."):
+    with st.spinner("🤖 AI Agents are Working..."):
 
-        status.info("🧭 Planner Agent Working...")
+        status.info("🧭 Planner Agent...")
         progress.progress(20)
+
         plan = planner_agent(topic)
 
-        status.info("🔍 Researcher Agent Working...")
+        status.info("🔍 Researcher Agent...")
         progress.progress(40)
+
         research = researcher_agent(topic)
 
-        status.info("📊 Analyst Agent Working...")
+        status.info("📊 Analyst Agent...")
         progress.progress(70)
+
         analysis = analyst_agent(topic, research)
 
-        status.info("✍ Writer Agent Working...")
+        status.info("✍️ Writer Agent...")
         progress.progress(90)
+
         report = writer_agent(topic, analysis)
 
         progress.progress(100)
 
-    status.success("✅ Report Generated Successfully!")
+    status.success("✅ Research Completed Successfully!")
 
     st.session_state.plan = plan
     st.session_state.research = research
@@ -253,38 +299,57 @@ if topic != "":
     st.session_state.report = report
 
     if topic not in st.session_state.history:
+
         st.session_state.history.append(topic)
 
 # =====================================
 # RESULTS
 # =====================================
 
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "📋 Plan",
-        "🌐 Research",
-        "📊 Analysis",
-        "📄 Final Report"
-    ])
+if "report" in st.session_state:
+
+    st.write("")
+
+    tab1, tab2, tab3, tab4 = st.tabs(
+        [
+            "🧭 Plan",
+            "🌐 Research",
+            "📊 Analysis",
+            "📄 Final Report"
+        ]
+    )
 
     with tab1:
 
-        st.markdown(plan)
+        st.markdown(f"""
+        <div class="result-card">
+        {st.session_state.plan}
+        </div>
+        """, unsafe_allow_html=True)
 
     with tab2:
 
-        if isinstance(research, list):
-            for item in research:
-                st.write("•", item)
-        else:
-            st.write(research)
+        st.markdown(f"""
+        <div class="result-card">
+        {st.session_state.research}
+        </div>
+        """, unsafe_allow_html=True)
 
     with tab3:
 
-        st.markdown(analysis)
+        st.markdown(f"""
+        <div class="result-card">
+        {st.session_state.analysis}
+        </div>
+        """, unsafe_allow_html=True)
 
     with tab4:
 
-        st.markdown(report)
+        st.markdown(f"""
+        <div class="result-card">
+        {st.session_state.report}
+        </div>
+        """, unsafe_allow_html=True)
 
         st.write("")
 
@@ -294,8 +359,8 @@ if topic != "":
 
             st.download_button(
                 "⬇ Download Report",
-                report,
-                file_name=f"{topic}.txt",
+                st.session_state.report,
+                file_name="research_report.txt",
                 mime="text/plain",
                 use_container_width=True
             )
@@ -304,10 +369,11 @@ if topic != "":
 
             if st.button(
                 "🔊 Read Report",
+                key="read_report",
                 use_container_width=True
             ):
-                read_complete_report()
 
+                read_complete_report()
 # =====================================
 # SIDEBAR
 # =====================================
@@ -316,21 +382,25 @@ with st.sidebar:
 
     st.title("🤖 AI Dashboard")
 
+    st.markdown("---")
+
     st.metric("📄 Reports", len(st.session_state.history))
     st.metric("🤖 AI Agents", "5")
     st.metric("⚡ Version", "9.0")
 
     st.markdown("---")
 
-    st.subheader("📚 History")
+    st.subheader("📚 Research History")
 
     if st.session_state.history:
 
         for item in reversed(st.session_state.history):
+
             st.write("•", item)
 
     else:
-        st.write("No history")
+
+        st.write("No History")
 
     st.markdown("---")
 
@@ -339,6 +409,9 @@ with st.sidebar:
 # =====================================
 # FOOTER
 # =====================================
+
+st.write("")
+st.write("")
 
 st.divider()
 
