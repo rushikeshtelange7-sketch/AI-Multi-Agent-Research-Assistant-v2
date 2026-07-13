@@ -272,17 +272,19 @@ box-shadow:0 0 35px rgba(64,196,255,.45);
 
 .search-card{
 
-background:rgba(255,255,255,.05);
+background:rgba(18,24,42,.85);
 
-padding:20px;
+padding:18px;
 
-border-radius:24px;
+border-radius:22px;
 
-border:1px solid rgba(255,255,255,.10);
+border:1px solid rgba(120,120,255,.18);
 
 backdrop-filter:blur(20px);
 
-margin-top:20px;
+box-shadow:0 0 35px rgba(70,120,255,.15);
+
+margin-top:25px;
 
 }
 
@@ -318,47 +320,83 @@ font-size:17px;
 
 .dashboard{
 
-background:rgba(255,255,255,.06);
+background:rgba(255,255,255,.05);
 
-border:1px solid rgba(255,255,255,.10);
+border:1px solid rgba(255,255,255,.08);
 
-border-radius:24px;
+border-radius:20px;
 
-padding:20px;
+padding:16px;
 
 width:100%;
 
-height:auto;
+min-height:140px;
 
-backdrop-filter:blur(20px);
+backdrop-filter:blur(18px);
 
-box-shadow:0 8px 25px rgba(0,0,0,.25);
+box-shadow:0 6px 18px rgba(0,0,0,.20);
+
+transition:all .3s ease;
+
+}
+
+.dashboard:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 0 22px rgba(64,196,255,.30);
 
 }
 
 .metric{
 
-font-size:34px;
+font-size:30px;
 
 font-weight:800;
 
 color:#4FC3F7;
 
+margin-top:8px;
+
+margin-bottom:4px;
+
+line-height:1.1;
+
 }
 
 .label{
 
-font-size:15px;
+font-size:13px;
 
 color:#BFC7D5;
 
-margin-bottom:22px;
+margin-bottom:10px;
 
 }
 
 .glow{
 
-box-shadow:0 0 35px rgba(64,196,255,.22);
+box-shadow:0 0 20px rgba(64,196,255,.15);
+
+}
+
+.dashboard h2{
+
+font-size:22px;
+
+font-weight:700;
+
+margin-bottom:12px;
+
+}
+
+.dashboard h3{
+
+font-size:18px;
+
+font-weight:600;
+
+margin-bottom:10px;
 
 }
 
@@ -400,17 +438,29 @@ box-shadow:0 0 18px rgba(64,196,255,.40);
 
 .stTextInput input{
 
-border-radius:18px;
+background:#171E32 !important;
 
-height:58px;
+border:1px solid #344267 !important;
 
-background:#1A1F2E;
+border-radius:18px !important;
 
-color:white;
+height:62px !important;
 
-font-size:18px;
+font-size:18px !important;
 
-border:1px solid #394B70;
+padding-left:55px !important;
+
+color:white !important;
+
+box-shadow:none !important;
+
+}
+
+.stTextInput input:focus{
+
+border:1px solid #7C4DFF !important;
+
+box-shadow:0 0 18px rgba(124,77,255,.40) !important;
 
 }
 
@@ -809,48 +859,49 @@ if "report" in st.session_state:
         )
 
         st.write("")
+ # =====================================
+# DOWNLOAD & READ REPORT
+# =====================================
 
-        c1,c2,c3=st.columns(3)
+if "report" in st.session_state:
 
-        with c1:
+    c1, c2 = st.columns(2)
 
-            st.download_button(
+    with c1:
 
-                "⬇ TXT",
+        st.download_button(
 
-                st.session_state.report,
+            label="⬇ Download Report",
 
-                file_name="Research_Report.txt",
+            data=st.session_state.report,
 
-                mime="text/plain",
+            file_name="Research_Report.txt",
+
+            mime="text/plain",
+
+            use_container_width=True
+
+        )
+
+    with c2:
+
+        if platform.system() == "Windows":
+
+            if st.button(
+
+                "🔊 Read Report",
+
+                key="read_report",
 
                 use_container_width=True
 
-            )
+            ):
 
-        with c2:
+                read_complete_report()
 
-            st.button(
+        else:
 
-                "📄 PDF",
-
-                use_container_width=True,
-
-                disabled=True
-
-            )
-
-        with c3:
-
-            st.button(
-
-                "📝 DOCX",
-
-                use_container_width=True,
-
-                disabled=True
-
-            )
+            st.info("🔊 Voice works only on Windows.")
 # =====================================
 # VERSION 10 SIDEBAR
 # =====================================
